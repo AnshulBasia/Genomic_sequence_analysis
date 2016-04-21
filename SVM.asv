@@ -1,0 +1,26 @@
+load train.txt;
+data=train(1:1000,:);
+label=train(1:1000,1);
+plot_c_vs_ncrna_count=ones(50,2);
+%SVMModel = svmtrain(train,label)
+a=0.01;
+for j=1:50
+svmStruct = svmtrain(data,label,'ShowPlot',true,'boxconstraint',a);
+load ncrna_test;
+test=train(1001:2000,:);
+for k=1:10
+Group = svmclassify(svmStruct,test);
+
+count = 0;
+for i=1:1000
+    if Group(i,1) == train(1000+i,1)
+        count=count+1;
+    end
+end
+count
+plot_c_vs_ncrna_count(j,2)=count;
+plot_c_vs_ncrna_count(j,1)=a;
+a=a+0.01;
+end
+plot_c_vs_ncrna_count
+plot(plot_c_vs_ncrna_count(:,1),plot_c_vs_ncrna_count(:,2))
